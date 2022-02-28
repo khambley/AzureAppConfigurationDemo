@@ -19,8 +19,15 @@ namespace TestAppConfig
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
+                // This code connects to the App Configuration store using the connection string and loads
+                // all key-value pairs.
+                webBuilder.ConfigureAppConfiguration(config =>
                 {
-                    webBuilder.UseStartup<Startup>();
-                });
+                    var settings = config.Build();
+                    var connection = settings.GetConnectionString("AppConfig");
+                    config.AddAzureAppConfiguration(connection);
+
+                }).UseStartup<Startup>());
+                
     }
 }
